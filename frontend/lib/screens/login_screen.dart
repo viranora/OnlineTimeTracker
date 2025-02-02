@@ -93,7 +93,7 @@ class _LoginScreenState extends State<login_screen> {
                 );
               },
               child: const Text(
-                'Hesabınız yok mu? Kayıt Ol',
+                'Hesabınız yok mu ? Kayıt Ol',
                 style: TextStyle(color: Colors.blue),
               ),
             ),
