@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart'; // Profil ekranı
-import 'friends_screen.dart'; // Arkadaşlar ekranı
-import 'groups_screen.dart'; // Gruplar ekranı
-import 'timer_screen.dart'; // Timer ekranı
+import 'community/community_screen.dart';
+import 'groups/groups_screen.dart';
+import 'profile/profile_screen.dart';
+import 'timer/timer_screen.dart';
+import 'settings/settings_screen.dart'; // Ayarlar sayfasını ekledik
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     const ProfileScreen(), // Profil ekranı
-    const FriendsScreen(), // Arkadaşlar ekranı
-    const GroupsScreen(), // Gruplar ekranı
+    const CommunityScreen(), // Topluluk ekranı
+    const GroupScreen(), // Gruplar ekranı
     const TimerScreen(), // Timer ekranı
   ];
 
@@ -30,25 +31,46 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ana Sayfa'),
+      body: Stack(
+        children: [
+          _screens[_currentIndex], // Seçilen ekranı göster
+          Positioned(
+            top: 10.0, // Konumu ayarlayın
+            right: 10.0, // Konumu ayarlayın
+            child: Builder(
+              builder: (BuildContext context) {
+                return IconButton(
+                  icon: const Icon(Icons.settings),
+                  color: Colors.purple,
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
-      body: _screens[_currentIndex], // Seçilen ekranı göster
+      endDrawer: const Drawer(
+        child: SettingsScreen(), // Ayarlar ekranı
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
-        backgroundColor: Colors.blue, // Arka plan rengi
+        backgroundColor:
+            const Color.fromARGB(255, 214, 172, 208), // Arka plan rengi
         selectedItemColor: Colors.white, // Seçili öğe rengi
         unselectedItemColor:
-            Color.fromRGBO(255, 255, 255, 0.6), // Opaklık uygulaması
+            const Color.fromRGBO(255, 255, 255, 0.6), // Opaklık uygulaması
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profil',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.group),
-            label: 'Arkadaşlar',
+            icon: Icon(Icons.people),
+            label: 'Topluluk', // Etiket güncellendi
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),

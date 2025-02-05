@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
-class register_screen extends StatefulWidget {
-  const register_screen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<register_screen> createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<register_screen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -47,9 +47,8 @@ class _RegisterScreenState extends State<register_screen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Kayıt başarılı!')),
       );
-      // Kayıt başarılı olduğunda login ekranına yönlendirme yapılabilir
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => login_screen()));
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
 

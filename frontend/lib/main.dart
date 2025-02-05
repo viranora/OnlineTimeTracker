@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
+import 'screens/auto/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Online Time Tracker',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      debugShowCheckedModeBanner: false,
-      home: const login_screen(), // İlk açılacak sayfa giriş ekranı olacak
+      theme: ThemeData(primaryColor: const Color.fromARGB(255, 160, 131, 157)),
+      debugShowCheckedModeBanner: false, //debug bannerı kaldır
+      home: const LoginScreen(), // İlk açılacak sayfa giriş ekranı olacak
     );
   }
 }

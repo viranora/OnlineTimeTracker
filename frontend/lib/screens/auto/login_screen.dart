@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart'; // Kayıt ekranına gitmek için
-import 'home_screen.dart'; // Başarılı giriş sonrası yönlendirme
+import '../home/home_screen.dart';
+import 'register_screen.dart';
 
-class login_screen extends StatefulWidget {
-  const login_screen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<login_screen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<login_screen> {
-  final TextEditingController _email_nameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
+  bool _rememberMe = false; // Remember me checkbox durumu
 
+  //şifreyi gösterip gizlemek için
   void _togglePasswordView() {
     setState(() {
-      _obscureText = !_obscureText; // Şifreyi göster / gizle
+      _obscureText = !_obscureText;
     });
   }
 
   void _login() {
-    String email = _email_nameController.text;
+    String email = _emailNameController.text;
     String password = _passwordController.text;
 
     if (email.isEmpty && password.isEmpty) {
@@ -41,8 +43,10 @@ class _LoginScreenState extends State<login_screen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Giriş başarılı!')),
       );
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     }
   }
 
@@ -56,7 +60,7 @@ class _LoginScreenState extends State<login_screen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _email_nameController,
+              controller: _emailNameController,
               decoration: const InputDecoration(
                   labelText: 'E-Posta veya Kullanıcı Adı',
                   prefixIcon: Icon(Icons.person)),
@@ -70,30 +74,42 @@ class _LoginScreenState extends State<login_screen> {
                 suffixIcon: IconButton(
                   icon: Icon(
                       _obscureText ? Icons.visibility_off : Icons.visibility),
-                  onPressed: _togglePasswordView, // Şifreyi göster / gizle
+                  onPressed: _togglePasswordView,
                 ),
               ),
-              obscureText: _obscureText, // Şifreyi gizlemek için
+              obscureText: _obscureText,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Checkbox(
+                  value: _rememberMe,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _rememberMe = value ?? false;
+                    });
+                  },
+                ),
+                const Text('Beni Hatırla'),
+              ],
+            ),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _login,
               child: const Text('Giriş Yap'),
             ),
-
             const SizedBox(height: 10),
-            // Kayıt ol butonu
             TextButton(
               onPressed: () {
-                // Kayıt ekranına yönlendirme
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const register_screen()),
+                      builder: (context) => const RegisterScreen()),
                 );
               },
               child: const Text(
-                'Hesabınız yok mu ? Kayıt Ol',
+                'Hesabınız yok mu? Kayıt Ol',
                 style: TextStyle(color: Colors.blue),
               ),
             ),
