@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Tarih formatı için gerekli kütüphane
-import 'date_picker.dart'; // DatePicker widget'ını import edin
 
 class ProfileStatus extends StatefulWidget {
   const ProfileStatus({super.key});
@@ -10,20 +8,7 @@ class ProfileStatus extends StatefulWidget {
 }
 
 class _ProfileStatusState extends State<ProfileStatus> {
-  DateTime currentDate = DateTime.now();
   String status = "Durumunuzu güncellemek için tıklayın...";
-
-  void _previousDay() {
-    setState(() {
-      currentDate = currentDate.subtract(const Duration(days: 1));
-    });
-  }
-
-  void _nextDay() {
-    setState(() {
-      currentDate = currentDate.add(const Duration(days: 1));
-    });
-  }
 
   // Durum için
   void _updateStatus() async {
@@ -69,12 +54,6 @@ class _ProfileStatusState extends State<ProfileStatus> {
         "";
   }
 
-  // Modern ve şık tarih formatı
-  String getFormattedDate() {
-    final DateFormat formatter = DateFormat('EEE, MMM d, yyyy');
-    return formatter.format(currentDate);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -91,28 +70,6 @@ class _ProfileStatusState extends State<ProfileStatus> {
                 fontStyle: FontStyle.italic,
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_left),
-                onPressed: _previousDay,
-              ),
-              DatePicker(
-                initialDate: currentDate,
-                onDateSelected: (newDate) {
-                  setState(() {
-                    currentDate = newDate;
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.arrow_right),
-                onPressed: _nextDay,
-              ),
-            ],
           ),
         ],
       ),

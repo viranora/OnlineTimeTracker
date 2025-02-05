@@ -8,53 +8,55 @@ class CommunityContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Trendler',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildMedal(
+                context, '2. Samuel', Colors.grey, 'assets/silver_medal.png'),
+            _buildMedal(
+                context, '1. Sarah', Colors.yellow, 'assets/gold_medal.png'),
+            _buildMedal(
+                context, '3. Sandra', Colors.blue, 'assets/bronze_medal.png'),
+          ],
         ),
-        const SizedBox(height: 10),
-        _buildTrendItem(context, 'Yeni Çıkan Teknolojiler', 'Teknoloji'),
-        _buildTrendItem(context, 'Sağlıklı Yaşam Tüyoları', 'Sağlık'),
-        _buildTrendItem(context, 'Seyahat Rehberi 2025', 'Seyahat'),
         const SizedBox(height: 20),
         const Text(
-          'Öneriler',
+          'Liderlik Tablosu',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        _buildRecommendationItem(context, 'Yapay Zeka Kursları', 'Eğitim'),
-        _buildRecommendationItem(context, 'En İyi Kitaplar', 'Eğitim'),
-        _buildRecommendationItem(context, 'Fotoğrafçılık İpuçları', 'Hobi'),
+        _buildLeaderboardItem('1. Sarah', 'Aktiflik Puanı: 980'),
+        _buildLeaderboardItem('2. Samuel', 'Aktiflik Puanı: 870'),
+        _buildLeaderboardItem('3. Sandra', 'Aktiflik Puanı: 860'),
+        _buildLeaderboardItem('4. Sophie', 'Aktiflik Puanı: 850'),
+        _buildLeaderboardItem('5. Stephen', 'Aktiflik Puanı: 830'),
       ],
     );
   }
 
-  Widget _buildTrendItem(BuildContext context, String title, String category) {
-    return ListTile(
-      leading: const Icon(Icons.trending_up),
-      title: Text(title),
-      subtitle: Text(category),
-      trailing: const Icon(Icons.arrow_forward),
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$title detayları burada.')),
-        );
-      },
+  Widget _buildMedal(
+      BuildContext context, String name, Color color, String imagePath) {
+    return Column(
+      children: [
+        CircleAvatar(
+          backgroundColor: color,
+          radius: 30,
+          child: Image.asset(imagePath),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          name,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
-  Widget _buildRecommendationItem(
-      BuildContext context, String title, String category) {
+  Widget _buildLeaderboardItem(String name, String score) {
     return ListTile(
-      leading: const Icon(Icons.recommend),
-      title: Text(title),
-      subtitle: Text(category),
-      trailing: const Icon(Icons.arrow_forward),
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$title detayları burada.')),
-        );
-      },
+      leading: const Icon(Icons.leaderboard),
+      title: Text(name),
+      subtitle: Text(score),
     );
   }
 }

@@ -53,7 +53,10 @@ class _TimerScreenState extends State<TimerScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Zamanlayıcı ve Kronometre'),
+        title: const Text(
+          'Zamanlayıcı ve Kronometre',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: Stack(
         children: [

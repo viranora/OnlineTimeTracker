@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'profile_status.dart'; // ProfileStatus dosyasını import et
 import 'friends/profile_friends.dart'; // ProfileFriends dosyasını import et
-import 'task_list.dart';
-import 'study_sessions_list.dart';
+import 'scoreboard.dart';
+import 'task_list.dart'; // TasksList bileşenini import et
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -12,13 +12,11 @@ class ProfileContent extends StatefulWidget {
 }
 
 class _ProfileContentState extends State<ProfileContent> {
-  int _selectedIndex = 0; // Tab bar için seçili indeks
   List<Map<String, dynamic>> tasks = [];
-  List<Map<String, dynamic>> studySessions = [];
 
-  void _addTask(String task) {
+  void _addTask(Map<String, dynamic> task) {
     setState(() {
-      tasks.add({'task': task, 'completed': false});
+      tasks.add(task);
     });
   }
 
@@ -28,55 +26,47 @@ class _ProfileContentState extends State<ProfileContent> {
     });
   }
 
-  void _addStudySession(String subject, int hours) {
-    setState(() {
-      studySessions.add({'subject': subject, 'hours': hours});
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      // Burada SingleChildScrollView widget'ı ekleniyor
       child: Column(
         children: [
           const ProfileFriends(), // Arkadaşlar kısmı
           const ProfileStatus(), // Durum kısmı
           const SizedBox(height: 20),
-          // Tab Bar
+          // Tab Bar ve TabBarView yapısının iyileştirilmesi
           DefaultTabController(
             length: 2,
             child: Column(
               children: [
-                TabBar(
+                const TabBar(
                   labelColor: Colors.blue,
                   unselectedLabelColor: Colors.grey,
-                  labelStyle: const TextStyle(
+                  labelStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
-                  tabs: const [
+                  indicatorWeight: 3.0, // Daha belirgin bir tab indicator
+                  indicatorColor: Colors.blue, // Aktif sekme indikatörü rengi
+                  tabs: [
                     Tab(text: 'Yapılacaklar'),
-                    Tab(text: 'Ne Kadar Çalıştım?'),
+                    Tab(text: 'Puan Tablosu'),
                   ],
-                  onTap: (index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
                 ),
                 const SizedBox(height: 10),
-                // Tab Bar İçeriği
-                _selectedIndex == 0
-                    ? TasksList(
+                SizedBox(
+                  height: 500, // İçeriğe uygun yükseklik
+                  child: TabBarView(
+                    children: [
+                      TasksList(
                         tasks: tasks,
                         onTaskToggle: _toggleTaskCompletion,
-                        onTaskAdd: _addTask,
-                      )
-                    : StudySessionsList(
-                        studySessions: studySessions,
-                        onStudySessionAdd: _addStudySession,
+                        onTaskAdd: _addTask, // Yeni task'ı buraya ekliyoruz
                       ),
+                      const Scoreboard(), // Puan Tablosu
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

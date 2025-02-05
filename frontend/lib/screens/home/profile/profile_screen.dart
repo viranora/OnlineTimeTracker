@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../flowpanel/flowpanel_screen.dart';
 import 'profile_content.dart'; // ProfileContent dosyasını import et
 
 class ProfileScreen extends StatelessWidget {
@@ -7,7 +8,13 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ProfileContent(), // ProfileContent'i burada çağırıyoruz
+      body: PageView(
+        reverse: true, // Sola kaydırma için reverse parametresini ekliyoruz
+        children: [
+          const ProfileContent(), // Profil İçeriği
+          const FlowScreen(), // Briefing tarzı kayan ekran içeriği
+        ],
+      ),
     );
   }
 }

@@ -16,15 +16,16 @@ class _TimerWidgetState extends State<TimerWidget> {
   int _totalSeconds = 0;
   Timer? _timer;
   bool _isRunning = false;
+  bool _isPaused = false; // Ara verildiğinde kontrol etmek için
   int _hours = 0, _minutes = 0, _seconds = 0;
-  final List<Map<String, String>> _savedTimers =
-      []; // Kaydedilen süreler listesi
+  final List<Map<String, String>> _savedTimers = [];
 
   void _startTimer() {
     setState(() {
       _totalSeconds = _hours * 3600 + _minutes * 60 + _seconds;
       _secondsRemaining = _totalSeconds;
       _isRunning = true;
+      _isPaused = false;
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -33,15 +34,41 @@ class _TimerWidgetState extends State<TimerWidget> {
           _secondsRemaining--;
         } else {
           _stopTimer();
-          _showCompletionDialog();
+          _showCompletionDialog(); // Süre bittiğinde otomatik kaydet
         }
       });
     });
   }
 
+  void _pauseTimer() {
+    _timer?.cancel();
+    setState(() {
+      _isPaused = true;
+    });
+  }
+
+  void _resumeTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondsRemaining > 0) {
+          _secondsRemaining--;
+        } else {
+          _stopTimer();
+          _showCompletionDialog(); // Süre bittiğinde otomatik kaydet
+        }
+      });
+    });
+    setState(() {
+      _isPaused = false;
+    });
+  }
+
   void _stopTimer() {
     _timer?.cancel();
-    setState(() => _isRunning = false);
+    setState(() {
+      _isRunning = false;
+      _isPaused = false;
+    });
   }
 
   void _resetTimer() {
@@ -49,31 +76,53 @@ class _TimerWidgetState extends State<TimerWidget> {
     setState(() {
       _secondsRemaining = 0;
       _isRunning = false;
+      _isPaused = false;
       _hours = 0;
       _minutes = 0;
       _seconds = 0;
     });
   }
 
-  void _showCompletionDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Zamanlayıcı Tamamlandı'),
-          content: const Text('Belirlediğiniz süre doldu.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Tamam'),
-            ),
-          ],
-        );
-      },
-    );
+  void _showCompletionDialog() async {
+    // Süre bittiğinde otomatik kaydet
+    final name = await _saveTimeWithName(context);
+
+    if (name != null && name.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Zamanlayıcı Tamamlandı'),
+            content: Text('"$name" adıyla kaydedildi.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Tamam'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Zamanlayıcı Tamamlandı'),
+            content: const Text('Belirlediğiniz süre doldu.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Tamam'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
-  void _saveTimeWithName(BuildContext context) async {
+  Future<String?> _saveTimeWithName(BuildContext context) async {
     TextEditingController nameController = TextEditingController();
     final name = await showDialog<String>(
       context: context,
@@ -110,6 +159,13 @@ class _TimerWidgetState extends State<TimerWidget> {
         _savedTimers.add({'name': name, 'time': _formatTime(_totalSeconds)});
       });
     }
+
+    return name;
+  }
+
+  void _stopAndSaveTimer(BuildContext context) {
+    _stopTimer();
+    _saveTimeWithName(context);
   }
 
   String _formatTime(int seconds) {
@@ -137,6 +193,11 @@ class _TimerWidgetState extends State<TimerWidget> {
                 ProgressDisplay(
                   secondsRemaining: _secondsRemaining,
                   totalSeconds: _totalSeconds,
+                  onPause: _pauseTimer,
+                  onResume: _resumeTimer,
+                  onStop: () => _stopAndSaveTimer(
+                      context), // Bitir butonu hem durdurur hem kaydeder
+                  isPaused: _isPaused,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -167,12 +228,6 @@ class _TimerWidgetState extends State<TimerWidget> {
                 ),
               ],
             ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => _saveTimeWithName(context),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-            child: const Text('Süreyi Kaydet', style: TextStyle(fontSize: 18)),
-          ),
           const SizedBox(height: 20),
           TimerList(savedTimers: _savedTimers),
         ],

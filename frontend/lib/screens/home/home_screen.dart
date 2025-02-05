@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _screens[_currentIndex], // Seçilen ekranı göster
           Positioned(
-            top: 10.0, // Konumu ayarlayın
+            top: 20.0, // Konumu ayarlayın
             right: 10.0, // Konumu ayarlayın
             child: Builder(
               builder: (BuildContext context) {
